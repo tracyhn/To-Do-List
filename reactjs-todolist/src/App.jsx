@@ -3,14 +3,22 @@ import TodoInput from "./components/TodoInput"
 import TodoList from "./components/TodoList"
 
 function App() {
-  const [todos, setTodos] = useState([
-    'Go to the gym',
-    'Eat more fruits and vege',
-    'Pick up the kids from school'
-  ])
+  const [todos, setTodos] = useState(readLocalStorage)
+
+  function readLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('todos'))
+    return data.todos
+  }
+
+  function persistData(newList) {
+    localStorage.setItem('todos', JSON.stringify({ todos:
+      newList
+    }))
+  }
 
   function handleAddTodos(newTodo) {
     const newTodoList = [...todos, newTodo]
+    persistData(newTodoList)
     setTodos(newTodoList)
   }
 
@@ -18,6 +26,7 @@ function App() {
     const itemsBefore = todos.slice(0,idx)
     const itemsAfter = todos.slice(idx+1)
     const newTodoList = itemsBefore.concat(itemsAfter)
+    persistData(newTodoList)
     setTodos(newTodoList)
   }
 
